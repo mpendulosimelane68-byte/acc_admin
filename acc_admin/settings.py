@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-mogz27*gzx#cy=arso0cw&z57!g33%9@)f05&ibs+$mo(ok7!8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "acc-dashboard-ycju.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
