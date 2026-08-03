@@ -81,15 +81,12 @@ WSGI_APPLICATION = 'acc_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "acc_admin",
-        "USER": "postgres",
-        "PASSWORD": "@umnguni07",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+    "default": dj_database_url.config(
+        conn_max_age=600
+    )
 }
 
 
