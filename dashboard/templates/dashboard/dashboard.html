@@ -1,0 +1,722 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anti-Crime Corruption Commission</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body{
+            background:#f5f7fa;
+        }
+
+       .sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #0A1F44;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+}
+
+        .sidebar h3{padding:20px;}
+        .sidebar a{
+            display:block;
+            padding:15px 20px;
+            color:white;
+            text-decoration:none;
+        }
+        .sidebar a:hover{background:#173d6b;}
+
+        .content{
+            margin-left:250px;
+            padding:25px;
+        }
+
+        .stat{
+            color:white;
+            padding:18px;
+            border-radius:12px;
+            text-decoration:none;
+            display:block;
+        }
+
+        .card-box{
+            border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .feed-item{
+            font-size:13px;
+            border-bottom:1px solid #eee;
+            padding:6px 0;
+        }
+        .sidebar-header{
+    text-align:center;
+    padding:20px 10px;
+    border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+
+.acc-logo{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+    margin-bottom:10px;
+}
+
+
+.sidebar-header h3{
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    line-height:1.4;
+}
+.analytics-children{
+    display:none;
+    background:#092344;
+}
+
+
+.analytics-children a{
+    padding-left:45px;
+    font-size:14px;
+}
+#analyticsChildren a{
+    padding-left:45px;
+    font-size:14px;
+    background:#092344;
+}
+
+.top-bar {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.top-bar-left h2 {
+    margin: 0;
+    color: #0A1F44;
+}
+
+.top-bar-left p {
+    margin: 5px 0 0;
+    color: gray;
+}
+
+.top-bar-right {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.weather-box,
+.account-box {
+    background: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+#calendar {
+    min-height: 500px;
+}
+#analyticsChildren a {
+    display: block;
+    padding: 10px;
+    position: relative;
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div class="sidebar-header">
+
+       <img src="{% static 'images/logo33.png' %}" alt="ACC Logo" class="acc-logo">
+
+
+        <h3>
+            Anti-Corruption<br>
+            Case Management System
+        </h3>
+
+    </div>
+
+
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'cases' %}">Cases</a>
+   <!-- Analytics Dropdown -->
+<div class="analytics-parent">
+
+    <a data-bs-toggle="collapse" href="#analyticsChildren" role="button">
+        Analytics
+        <span style="float:right;">▼</span>
+    </a>
+
+
+    <div class="collapse" id="analyticsChildren">
+
+       <a href="{% url 'overview' %}">Overview</a>
+
+        <a href="{% url 'regions' %}">Regions</a>
+
+        <a href="{% url 'private_institutions' %}">
+    Private Institutions
+</a>
+
+        <li>
+    <a href="{% url 'public_institutions' %}">
+        Public Institutions
+    </a>
+</li>
+
+       <a href="{% url 'age_groups' %}">
+    Age Groups
+</a>
+
+       <a href="{% url 'gender_analysis' %}">
+    Gender Analysis
+</a>
+
+<a href="{% url 'reporter_type_analysis' %}">
+    Reporter Type Analysis
+</a>
+
+<a href="{% url 'trends' %}">
+    Trends
+</a>
+
+    </div>
+
+</div>
+    <a href="{% url 'audit_logs' %}">Audit Logs</a>
+    <a href="{% url 'settings' %}">Settings</a>
+
+    <a href="{% url 'dashboard_logout' %}">
+    Logout
+</a>
+</div>
+
+<div class="content">
+
+    <h2>Dashboard</h2>
+    <!-- TOP BAR -->
+
+<div class="top-bar">
+
+    <div class="welcome-section">
+        <h2>Welcome back, Administrator 👋</h2>
+        <p>{{ current_date }}</p>
+    </div>
+
+    <div class="top-widgets">
+
+        <div class="widget-box">
+            <i class="fas fa-clock"></i>
+            <span id="clock"></span>
+        </div>
+
+        <div class="widget-box">
+    <i class="fas fa-cloud-sun"></i>
+
+    <span>
+        {{ weather.location }},
+        {{ weather.temperature }}°C
+        <br>
+        {{ weather.description }}
+    </span>
+
+</div>
+
+        <div class="profile-box">
+
+            <i class="fas fa-user-circle"></i>
+
+            <div>
+                <strong>{{ request.user.username }}</strong>
+                <br>
+              <a href="{% url 'dashboard_logout' %}">
+    Logout
+</a>
+</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mt-3 g-3">
+
+    <div class="col">
+    <a class="stat" style="background:#0d6efd;">
+
+        <i class="fas fa-folder-open"></i>
+
+        <h6>Total Cases</h6>
+
+        <h2>{{ total_cases }}</h2>
+
+    </a>
+</div>
+    <div class="col">
+        <a class="stat" style="background:#198754;">
+            <h6>New Today</h6>
+            <h2>{{ new_today }}</h2>
+        </a>
+    </div>
+
+    <div class="col">
+        <a class="stat" style="background:#fd7e14;">
+            <h6>Under Investigation</h6>
+            <h2>{{ under_investigation }}</h2>
+        </a>
+    </div>
+
+    <div class="col">
+        <a class="stat" style="background:#0dcaf0;">
+            <h6>Referrals</h6>
+            <h2>{{ referrals }}</h2>
+        </a>
+    </div>
+
+    <div class="col">
+        <a class="stat" style="background:#6c757d;">
+            <h6>Closed Cases</h6>
+            <h2>{{ closed }}</h2>
+        </a>
+    </div>
+
+</div>
+    <!-- SECOND ROW -->
+    <div class="row mt-4">
+
+        <!-- RECENT CASES (EMPTY TABLE) -->
+        <div class="col-md-6">
+            <div class="card card-box">
+                <div class="card-header d-flex justify-content-between align-items-center">
+
+    <span>
+        Recent Cases
+    </span>
+
+    <a href="{% url 'cases' %}" class="btn btn-sm btn-danger">
+        View All
+    </a>
+
+</div>
+                <div class="card-body">
+
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Case</th>
+                                <th>Region</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                       <tbody>
+
+{% for case in recent_cases %}
+
+<tr>
+    <td>{{ case.case_code }}</td>
+<td>{{ case.region }}</td>
+<td>{{ case.status }}</td>
+<td>{{ case.incident_date }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="4" class="text-center text-muted">
+        No cases received yet
+    </td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+                    </table>
+
+                     </div>
+            </div>
+
+
+        <!-- ACTIVITY FEED -->
+
+        <div class="card card-box mt-3">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <span>
+                    <i class="fas fa-clock"></i>
+                    Activity Feed
+                </span>
+
+                <a href="{% url 'audit_logs' %}" class="btn btn-sm btn-danger">
+                    View All
+                </a>
+
+            </div>
+
+
+            <div class="card-body p-2">
+
+                {% for log in activity_logs %}
+
+                <div class="feed-item">
+
+                    <strong>{{ log.user }}</strong>
+                    {{ log.action }}
+
+                    <br>
+
+                    <small class="text-muted">
+    <i class="fas fa-calendar"></i>
+    {{ log.created_at|date:"F d, Y" }}
+
+    &nbsp;
+
+    <i class="fas fa-clock"></i>
+    {{ log.created_at|time:"g:i a" }}
+</small>
+
+                </div>
+
+                {% empty %}
+
+                <p class="text-muted">
+                    No activity yet
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+    </div>   <!-- close left column -->
+
+
+    <div class="col-md-6">
+
+    
+    <!-- CALENDAR -->
+
+    <div class="card card-box">
+
+        <div class="card-header">
+            Administrator Calendar
+        </div>
+
+        <div class="card-body">
+
+            <div id="calendar"></div>
+            <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    var calendarElement = document.getElementById('calendar');
+
+
+    var calendar = new FullCalendar.Calendar(calendarElement, {
+
+        initialView: 'dayGridMonth',
+
+        selectable: true,
+
+
+        dateClick: function(info) {
+
+            let activity = prompt(
+                "Enter administrator activity:"
+            );
+
+
+            if(activity){
+
+                alert(
+                    "Activity scheduled for "
+                    + info.dateStr
+                );
+
+            }
+
+        }
+
+    });
+
+
+    calendar.render();
+
+});
+
+</script>
+
+        </div>
+
+    </div>
+
+
+    <!-- UPCOMING NOTIFICATIONS -->
+
+    <div class="card card-box mt-3">
+
+        <div class="card-header">
+            Upcoming Notifications
+        </div>
+
+        <div class="card-body">
+
+            {% for notification in upcoming_notifications %}
+
+                <div>
+                    <strong>
+                        {{ notification.title }}
+                    </strong>
+
+                    <br>
+
+                    {{ notification.date }}
+                    |
+                    {{ notification.time }}
+
+                </div>
+
+                <hr>
+
+            {% empty %}
+
+                No upcoming notifications.
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+</div>
+
+       
+    </div>
+
+    <div class="row mt-4">
+
+    
+
+</div>
+
+
+
+<!-- CHART JS -->
+{{ monthly_labels|json_script:"monthly-labels" }}
+{{ monthly_values|json_script:"monthly-values" }}
+
+{{ sector_labels|json_script:"sector-labels" }}
+{{ sector_values|json_script:"sector-values" }}
+
+
+<script>
+
+
+const monthlyLabels = JSON.parse(
+    document.getElementById("monthly-labels").textContent
+);
+
+
+const monthlyValues = JSON.parse(
+    document.getElementById("monthly-values").textContent
+);
+
+
+const sectorLabels = JSON.parse(
+    document.getElementById("sector-labels").textContent
+);
+
+
+const sectorValues = JSON.parse(
+    document.getElementById("sector-values").textContent
+);
+
+
+
+
+
+// MONTHLY TREND
+
+new Chart(
+    document.getElementById("trendChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels: monthlyLabels,
+
+            datasets:[{
+
+                label:"Cases",
+
+                data: monthlyValues,
+
+                borderColor:"#0d6efd",
+
+                tension:0.3
+
+            }]
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+// PUBLIC VS PRIVATE
+
+new Chart(
+    document.getElementById("pie1"),
+
+    {
+
+        type:"pie",
+
+        data:{
+
+            labels: sectorLabels,
+
+            datasets:[{
+
+                data: sectorValues,
+
+                backgroundColor:[
+                    "#0d6efd",
+                    "#198754"
+                ]
+
+            }]
+
+        }
+
+    }
+
+);
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+function confirmLogout(){
+
+    let confirmation = confirm(
+        "Administrator, are you sure you want to logout?"
+    );
+
+    if(confirmation){
+
+        alert(
+            "Thank you Administrator. Goodbye and see you later!"
+        );
+
+        return true; // continue logout
+    }
+
+    return false; // cancel logout
+}
+
+</script>
+</body>
+</html>
+<script>
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock").innerHTML =
+        now.toLocaleTimeString();
+}
+
+setInterval(updateClock, 1000);
+
+updateClock();
+
+</script>
+    <!-- Your existing dashboard content -->
+
+    <!-- Your charts/scripts if you have any -->
+
+
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+
+            initialView: 'dayGridMonth',
+
+            selectable: true,
+
+            height: 500,
+
+            dateClick: function(info){
+
+    window.location.href =
+    "/notifications/add/?date=" + info.dateStr;
+
+}
+
+        });
+
+        calendar.render();
+
+    });
+
+    </script>
+
+
+</body>
+</html>

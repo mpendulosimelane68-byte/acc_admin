@@ -1,0 +1,25 @@
+<h2>Update Case Status</h2>
+
+<p><strong>Case:</strong> {{ case.case_code }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Status</label>
+    <select name="status" class="form-control">
+        <option value="open">Open</option>
+        <option value="investigation">Investigation</option>
+        <option value="closed">Closed</option>
+        <option value="referred">Referred</option>
+        <option value="not_corruption">Not Corruption Related</option>
+    </select>
+
+    <label>Message to Sender</label>
+    <textarea name="message" class="form-control"></textarea>
+
+    <br>
+
+    <button type="submit" class="btn btn-success">
+        Update Status
+    </button>
+</form>

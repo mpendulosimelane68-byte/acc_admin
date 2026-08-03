@@ -1,0 +1,1019 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+    <h3 class="mb-4">
+        Analytics Overview
+    </h3>
+
+
+
+<div class="export-button-container">
+    <a href="{% url 'export_overview_excel' %}" 
+       class="btn btn-success">
+        Export Analytics Excel
+    </a>
+</div>
+
+
+    <!-- SUMMARY CARDS -->
+
+
+    <div class="row mb-4">
+
+
+
+        <!-- Total Cases -->
+
+        <div class="col-md-3">
+
+            <div class="dashboard-card total-card shadow-sm">
+
+
+                <div class="card-content">
+
+
+                    <div>
+
+                        <h6>
+                            Total Cases
+                        </h6>
+
+                        <h2>
+                            {{ total_cases }}
+                        </h2>
+
+                        <small>
+                            All reported cases
+                        </small>
+
+                    </div>
+
+
+
+                    <div class="card-icon">
+
+                        <i class="bi bi-folder-fill"></i>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <!-- Investigation -->
+
+        <div class="col-md-3">
+
+            <div class="dashboard-card investigation-card shadow-sm">
+
+
+                <div class="card-content">
+
+
+                    <div>
+
+                        <h6>
+                            Under Investigation
+                        </h6>
+
+                        <h2>
+                            {{ investigation }}
+                        </h2>
+
+                        <small>
+                            Active investigations
+                        </small>
+
+                    </div>
+
+
+
+                    <div class="card-icon">
+
+                        <i class="bi bi-search"></i>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <!-- Referrals -->
+
+        <div class="col-md-3">
+
+
+            <div class="dashboard-card referral-card shadow-sm">
+
+
+                <div class="card-content">
+
+
+                    <div>
+
+                        <h6>
+                            Referrals
+                        </h6>
+
+                        <h2>
+                            {{ referrals }}
+                        </h2>
+
+                        <small>
+                            Referred cases
+                        </small>
+
+                    </div>
+
+
+
+                    <div class="card-icon">
+
+                        <i class="bi bi-arrow-right-circle-fill"></i>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <!-- Closed -->
+
+        <div class="col-md-3">
+
+
+            <div class="dashboard-card closed-card shadow-sm">
+
+
+                <div class="card-content">
+
+
+                    <div>
+
+                        <h6>
+                            Closed Cases
+                        </h6>
+
+                        <h2>
+                            {{ closed }}
+                        </h2>
+
+                        <small>
+                            Completed cases
+                        </small>
+
+                    </div>
+
+
+
+                    <div class="card-icon">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+<!-- ANALYTICS GRAPHS -->
+
+
+<div class="row g-3">
+
+
+
+    <!-- SECTOR GRAPH -->
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+            <div class="card-header">
+
+                Cases by Sector
+
+            </div>
+
+
+            <div class="card-body chart-container">
+
+                <canvas id="sectorChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- REGION GRAPH -->
+
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+
+            <div class="card-header">
+
+                Cases by Region
+
+            </div>
+
+
+            <div class="card-body chart-container">
+
+                <canvas id="regionChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="row g-3 mt-1">
+
+
+
+    <!-- STATUS -->
+
+    <div class="col-md-6">
+
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+
+            <div class="card-header">
+
+                Case Status Distribution
+
+            </div>
+
+
+            <div class="card-body chart-container">
+
+                <canvas id="statusChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- GENDER -->
+
+
+    <div class="col-md-6">
+
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+
+            <div class="card-header">
+
+                Gender Distribution
+
+            </div>
+
+
+            <div class="card-body chart-container">
+
+                <canvas id="genderChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- AGE GROUP -->
+
+
+<div class="row g-3 mt-1">
+
+
+    <div class="col-md-12">
+
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+
+            <div class="card-header">
+
+                Age Group Analysis
+
+            </div>
+
+
+            <div class="card-body chart-container-large">
+
+                <canvas id="ageChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<!-- MONTHLY TREND -->
+
+
+<div class="row g-3 mt-1">
+
+
+    <div class="col-md-12">
+
+
+        <div class="card shadow-sm dashboard-chart-card">
+
+
+            <div class="card-header">
+
+                Monthly Reporting Trend
+
+            </div>
+
+
+            <div class="card-body chart-container-large">
+
+                <canvas id="trendChart"></canvas>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<style>
+
+
+.dashboard-card {
+
+    height:150px;
+    border-radius:15px;
+    padding:20px;
+    color:white;
+
+}
+
+
+
+.card-content {
+
+    height:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+
+
+.dashboard-card h6,
+.dashboard-card h2,
+.dashboard-card small {
+
+    color:white;
+
+}
+
+
+
+.dashboard-card h2 {
+
+    font-size:36px;
+    font-weight:700;
+    margin:5px 0;
+
+}
+
+
+
+.dashboard-card small {
+
+    opacity:0.85;
+
+}
+
+
+
+
+
+.total-card {
+
+    background:linear-gradient(135deg,#0A1F44,#163A70);
+
+}
+
+
+
+.investigation-card {
+
+    background:linear-gradient(135deg,#B11226,#D9364A);
+
+}
+
+
+
+.referral-card {
+
+    background:linear-gradient(135deg,#F39C12,#F7B733);
+
+}
+
+
+
+.closed-card {
+
+    background:linear-gradient(135deg,#198754,#28C76F);
+
+}
+
+
+
+
+.card-icon {
+
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.2);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:30px;
+
+}
+
+
+
+.card-icon i {
+
+    color:white;
+
+}
+
+
+
+.dashboard-chart-card{
+
+    border:none;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+}
+
+
+
+.card-header{
+
+    background:#0A1F44;
+
+    color:white;
+
+    font-weight:600;
+
+}
+
+
+
+.chart-container{
+
+    height:280px;
+
+}
+
+
+
+.chart-container-large{
+
+    height:320px;
+
+}
+
+
+
+canvas{
+
+    max-height:100%;
+
+}
+
+
+.export-button-container {
+    margin-bottom: 25px;
+    margin-top: 15px;
+}
+
+
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+    
+
+
+// =======================
+// SECTOR CHART
+// =======================
+
+new Chart(
+    document.getElementById("sectorChart"),
+{
+
+type:"pie",
+
+data:{
+
+
+labels: [
+    "Public Sector",
+    "Private Sector",
+    "None"
+],
+
+
+datasets:[{
+
+data:[
+
+    Number("{{ public_total|default:'0' }}"),
+
+    Number("{{ private_total|default:'0' }}"),
+
+    Number("{{ none_total|default:'0' }}")
+
+],
+
+
+backgroundColor:[
+    "#0A1F44",
+    "#B11226",
+    "#198754"
+]
+
+
+}]
+
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false
+
+}
+
+
+}
+
+);
+
+//==== regional===========//
+
+const regionLabels = JSON.parse(
+    '{{ region_labels|escapejs }}'
+);
+
+const regionValues = JSON.parse(
+    '{{ region_values|escapejs }}'
+);
+
+
+new Chart(
+    document.getElementById("regionChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: regionLabels,
+
+            datasets: [
+                {
+                    label: "Cases",
+                    data: regionValues
+                }
+            ]
+
+        },
+
+        options: {
+
+            responsive:true,
+
+            maintainAspectRatio:false
+
+        }
+
+    }
+);
+
+// =======================
+// STATUS CHART
+// =======================
+
+
+new Chart(
+    document.getElementById("statusChart"),
+    {
+
+        type:"doughnut",
+
+        data:{
+
+
+            labels: JSON.parse(
+                '{{ status_labels|escapejs }}'
+            ),
+
+
+            datasets:[{
+
+                data: JSON.parse(
+                    '{{ status_values|escapejs }}'
+                )
+
+            }]
+
+
+        },
+
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+
+                    position:"bottom"
+
+                }
+
+            }
+
+
+        }
+
+
+    }
+
+);
+
+
+
+
+
+
+
+// =======================
+// GENDER CHART
+// =======================
+
+
+new Chart(
+    document.getElementById("genderChart"),
+    {
+
+        type:"pie",
+
+        data:{
+
+
+            labels: JSON.parse(
+                '{{ gender_labels|escapejs }}'
+            ),
+
+
+            datasets:[{
+
+                data: JSON.parse(
+                    '{{ gender_values|escapejs }}'
+                )
+
+            }]
+
+
+        },
+
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false
+
+        }
+
+
+    }
+
+);
+
+
+
+
+
+
+
+
+// =======================
+// AGE GROUP CHART
+// =======================
+
+
+new Chart(
+    document.getElementById("ageChart"),
+    {
+
+        type:"bar",
+
+        data:{
+
+
+            labels: JSON.parse(
+                '{{ age_labels|escapejs }}'
+            ),
+
+
+            datasets:[{
+
+                label:"Cases",
+
+                data: JSON.parse(
+                    '{{ age_values|escapejs }}'
+                )
+
+            }]
+
+
+        },
+
+
+         options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            let value = context.raw;
+
+                            let total = context.dataset.data.reduce(
+                                (a, b) => a + b,
+                                0
+                            );
+
+                            let percentage = (
+                                value / total * 100
+                            ).toFixed(1);
+
+                            return context.label 
+                                + ": "
+                                + value
+                                + " ("
+                                + percentage
+                                + "%)";
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+
+
+
+
+
+// =======================
+// MONTHLY TREND
+// =======================
+
+
+new Chart(
+    document.getElementById("trendChart"),
+    {
+
+        type:"line",
+
+        data:{
+
+
+            labels: JSON.parse(
+                '{{ monthly_labels|escapejs }}'
+            ),
+
+
+            datasets:[{
+
+                label:"Reported Cases",
+
+                data: JSON.parse(
+                    '{{ monthly_values|escapejs }}'
+                ),
+
+                tension:0.3,
+
+                borderWidth:3
+
+            }]
+
+
+        },
+
+
+         options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(context) {
+
+                            let value = context.raw;
+
+                            let total = context.dataset.data.reduce(
+                                (a, b) => a + b,
+                                0
+                            );
+
+                            let percentage = (
+                                value / total * 100
+                            ).toFixed(1);
+
+                            return context.label 
+                                + ": "
+                                + value
+                                + " ("
+                                + percentage
+                                + "%)";
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+{% endblock %}

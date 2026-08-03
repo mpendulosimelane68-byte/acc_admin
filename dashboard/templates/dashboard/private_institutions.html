@@ -1,0 +1,483 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+
+        <h3 style="color:#0A1F44;font-weight:700;">
+            Private Institutions Analysis
+        </h3>
+
+        <p class="text-muted">
+            Distribution of reported cases by private institution category
+        </p>
+
+    </div>
+    
+
+<div class="export-button-container">
+
+<a href="{% url 'export_private_institutions_excel' %}"
+class="btn btn-success">
+
+Export Private Institutions Analytics
+
+</a>
+
+</div>
+
+    <div class="row">
+
+
+        <!-- LINE CHART -->
+
+        <div class="col-lg-8 mb-4">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-header bg-white">
+
+                    <h5 style="color:#0A1F44;">
+                        Private Institution Cases
+                    </h5>
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+                    <div style="height:320px;">
+
+                        <canvas id="lineChart"></canvas>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <!-- PIE CHART -->
+
+
+        <div class="col-lg-4 mb-4">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-header bg-white">
+
+
+                    <h5 style="color:#0A1F44;">
+                        Distribution
+                    </h5>
+
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+                    <div style="height:300px;">
+
+                        <canvas id="pieChart"></canvas>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+
+const labels = [
+
+"Insurance",
+"Telecom",
+"Transport",
+"Construction",
+"Textile",
+"Retail",
+"Mining",
+"Agriculture",
+"Hotel",
+"Private Health",
+"Private School",
+"Private University",
+"Security",
+"Other Private",
+"None"
+
+];
+
+
+
+
+const data = [
+
+Number("{{ insurance|default:'0' }}"),
+Number("{{ telecom|default:'0' }}"),
+Number("{{ transport|default:'0' }}"),
+Number("{{ construction|default:'0' }}"),
+Number("{{ textile|default:'0' }}"),
+Number("{{ retail|default:'0' }}"),
+Number("{{ mining|default:'0' }}"),
+Number("{{ agriculture|default:'0' }}"),
+Number("{{ hotel|default:'0' }}"),
+Number("{{ private_health|default:'0' }}"),
+Number("{{ private_school|default:'0' }}"),
+Number("{{ private_university|default:'0' }}"),
+Number("{{ security|default:'0' }}"),
+Number("{{ other_private|default:'0' }}"),
+Number("{{ none_cases|default:'0' }}")
+
+];
+
+
+
+
+
+
+new Chart(
+
+document.getElementById("lineChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+
+datasets:[{
+
+label:"Cases",
+
+data:data,
+
+borderColor:"#0A1F44",
+
+borderWidth:3,
+
+tension:0.3,
+
+fill:false
+
+}]
+
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+scales:{
+
+y:{
+
+beginAtZero:true,
+
+
+ticks:{
+
+stepSize:1
+
+}
+
+}
+
+}
+
+}
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+new Chart(
+
+document.getElementById("pieChart"),
+
+{
+
+type:"pie",
+
+data:{
+
+labels:labels,
+
+
+datasets:[{
+
+data:data,
+
+
+backgroundColor:[
+
+"#0A1F44",
+"#B11226",
+"#198754",
+"#ffc107",
+"#6f42c1",
+"#0dcaf0",
+"#fd7e14",
+"#20c997",
+"#6610f2",
+"#dc3545",
+"#0d6efd",
+"#6c757d",
+"#795548",
+"#adb5bd",
+"#343a40"
+
+]
+
+
+}]
+
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+
+}
+
+
+}
+
+);
+
+
+</script>
+<div class="card shadow-sm border-0 rounded-4 mt-4">
+
+    <div class="card-header bg-white">
+
+        <h5 style="color:#0A1F44;font-weight:700;">
+            Institution Summary
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Institution
+                        </th>
+
+                        <th>
+                            Cases
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <tr>
+                        <td>Insurance Company</td>
+                        <td>{{ insurance }}</td>
+                        <td>{{ insurance_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Telecommunications</td>
+                        <td>{{ telecom }}</td>
+                        <td>{{ telecom_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Transport Company</td>
+                        <td>{{ transport }}</td>
+                        <td>{{ transport_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Construction Company</td>
+                        <td>{{ construction }}</td>
+                        <td>{{ construction_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Textile / Manufacturing</td>
+                        <td>{{ textile }}</td>
+                        <td>{{ textile_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Retail Business</td>
+                        <td>{{ retail }}</td>
+                        <td>{{ retail_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Mining Company</td>
+                        <td>{{ mining }}</td>
+                        <td>{{ mining_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Agriculture Business</td>
+                        <td>{{ agriculture }}</td>
+                        <td>{{ agriculture_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Hotel / Tourism</td>
+                        <td>{{ hotel }}</td>
+                        <td>{{ hotel_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Private Health Facility</td>
+                        <td>{{ private_health }}</td>
+                        <td>{{ private_health_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Private School</td>
+                        <td>{{ private_school }}</td>
+                        <td>{{ private_school_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Private University / College</td>
+                        <td>{{ private_university }}</td>
+                        <td>{{ private_university_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Security Company</td>
+                        <td>{{ security }}</td>
+                        <td>{{ security_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Other Private Institution</td>
+                        <td>{{ other_private }}</td>
+                        <td>{{ other_private_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>None</td>
+                        <td>{{ none_cases }}</td>
+                        <td>{{ none_percentage }}%</td>
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+{% endblock %}

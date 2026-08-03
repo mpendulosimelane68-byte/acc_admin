@@ -1,0 +1,48 @@
+<h2>📁 Case Management Settings</h2>
+
+<p>
+Control how reports move through the investigation process.
+</p>
+
+
+<form method="POST">
+
+{% csrf_token %}
+
+
+<h4>Case Workflow</h4>
+
+<label>
+Default Starting Status
+</label>
+
+{{ form.default_status }}
+
+
+<br><br>
+
+
+<label>
+{{ form.allow_custom_statuses }}
+Allow Custom Statuses
+</label>
+
+
+<br><br>
+
+
+<label>
+{{ form.automatic_case_numbering }}
+Automatic Case Numbering
+</label>
+
+
+<br><br>
+
+
+<button type="submit">
+Save Changes
+</button>
+
+
+</form>

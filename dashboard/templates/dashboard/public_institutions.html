@@ -1,0 +1,481 @@
+<div class="container-fluid analytics-page">
+
+    <div class="analytics-header mb-4">
+
+        <div>
+            <h2 class="analytics-title">
+                Public Institutions Analytics
+            </h2>
+
+            <p class="analytics-subtitle">
+                Analysis of reported cases by institution.
+            </p>
+
+            
+        </div>
+
+        <div class="analytics-badge">
+
+            Total Institutions:
+            <strong>12</strong>
+
+        </div>
+
+   </div>
+
+<!-- Export Button -->
+</div>
+
+<!-- Export Button -->
+<div class="d-flex justify-content-end my-4">
+   <a href="{% url 'export_public_institutions_excel' %}" 
+   class="excel-btn">
+    Export to Excel
+</a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 mt-4">
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+        
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Cases by Institution
+                </h5>
+
+                <div class="chart-container-large">
+
+                    <canvas id="lineChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+
+        <div class="col-lg-4">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title text-center">
+                    Distribution
+                </h5>
+
+                <div class="chart-container-small">
+
+                    <canvas id="pieChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+    <div class="card shadow-sm border-0 rounded-4 mt-4">
+
+    <div class="card-header bg-white">
+
+        <h5 style="color:#0A1F44;font-weight:700;">
+            Institution Summary
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Institution
+                        </th>
+
+                        <th>
+                            Cases
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <tr>
+                        <td>Ministry</td>
+                        <td>{{ ministry }}</td>
+                        <td>{{ ministry_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Government Department</td>
+                        <td>{{ department }}</td>
+                        <td>{{ department_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Municipality</td>
+                        <td>{{ municipality }}</td>
+                        <td>{{ municipality_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Parastatal</td>
+                        <td>{{ parastatal }}</td>
+                        <td>{{ parastatal_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Police</td>
+                        <td>{{ police }}</td>
+                        <td>{{ police_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Public Health Facility</td>
+                        <td>{{ public_health }}</td>
+                        <td>{{ public_health_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Public School</td>
+                        <td>{{ public_school }}</td>
+                        <td>{{ public_school_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Public University</td>
+                        <td>{{ public_university }}</td>
+                        <td>{{ public_university_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Procurement</td>
+                        <td>{{ procurement }}</td>
+                        <td>{{ procurement_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Revenue</td>
+                        <td>{{ revenue }}</td>
+                        <td>{{ revenue_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Other Public Institution</td>
+                        <td>{{ other_public }}</td>
+                        <td>{{ other_public_percentage }}%</td>
+                    </tr>
+
+
+                    <tr>
+                        <td>None</td>
+                        <td>{{ none_cases }}</td>
+                        <td>{{ none_percentage }}%</td>
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const institutionData = {
+
+    labels: [
+
+        "Ministry",
+        "Department",
+        "Municipality",
+        "Parastatal",
+        "Police",
+        "Health",
+        "School",
+        "University",
+        "Procurement",
+        "Revenue",
+        "Other",
+        "None"
+
+    ],
+
+    datasets: [{
+
+        label: "Cases",
+
+        data: [
+
+            Number("{{ ministry|default:'0' }}"),
+            Number("{{ department|default:'0' }}"),
+            Number("{{ municipality|default:'0' }}"),
+            Number("{{ parastatal|default:'0' }}"),
+            Number("{{ police|default:'0' }}"),
+            Number("{{ public_health|default:'0' }}"),
+            Number("{{ public_school|default:'0' }}"),
+            Number("{{ public_university|default:'0' }}"),
+            Number("{{ procurement|default:'0' }}"),
+            Number("{{ revenue|default:'0' }}"),
+            Number("{{ other_public|default:'0' }}"),
+            Number("{{ none_cases|default:'0' }}")
+
+        ],
+
+        borderColor: "#0A1F44",
+
+        backgroundColor: [
+
+            "#0A1F44",
+            "#B11226",
+            "#198754",
+            "#ffc107",
+            "#6f42c1",
+            "#0dcaf0",
+            "#fd7e14",
+            "#20c997",
+            "#6610f2",
+            "#dc3545",
+            "#6c757d",
+            "#adb5bd"
+
+        ],
+
+        tension: 0.4,
+
+        pointRadius: 5,
+
+        pointHoverRadius: 8,
+
+        borderWidth: 3,
+
+        fill: false
+
+    }]
+
+};
+
+new Chart(document.getElementById("lineChart"), {
+
+    type: "line",
+
+    data: institutionData,
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                ticks: {
+
+                    stepSize: 1
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+new Chart(document.getElementById("pieChart"), {
+
+    type: "doughnut",
+
+    data: institutionData,
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        cutout: "65%"
+
+    }
+
+});
+
+</script>
+
+<style>
+
+.analytics-page {
+
+    padding: 20px;
+
+}
+
+.analytics-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: linear-gradient(135deg, #0A1F44, #152d63);
+
+    color: white;
+
+    padding: 25px;
+
+    border-radius: 16px;
+
+}
+
+.analytics-title {
+
+    font-weight: 700;
+
+    margin: 0;
+
+}
+
+.analytics-subtitle {
+
+    opacity: .8;
+
+    margin-top: 6px;
+
+}
+
+.analytics-badge {
+
+    background: rgba(255,255,255,.15);
+
+    padding: 10px 18px;
+
+    border-radius: 10px;
+
+}
+
+.chart-card {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.chart-title {
+
+    color: #0A1F44;
+
+    margin-bottom: 20px;
+
+    font-weight: 600;
+
+}
+
+.chart-container-large {
+
+    height: 350px;
+
+}
+
+.chart-container-small {
+
+    width: 260px;
+
+    height: 260px;
+
+    margin: auto;
+
+}
+/* Bigger Institution Summary Table */
+
+.table {
+
+    font-size: 16px;
+
+}
+
+
+.table th {
+
+    font-size: 17px;
+
+    padding: 15px;
+
+}
+
+
+.table td {
+
+    padding: 15px;
+
+}
+.excel-btn {
+    background-color: #198754;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    border: none;
+    transition: 0.3s ease;
+}
+
+.excel-btn:hover {
+    background-color: #146c43;
+    color: white;
+}
+
+</style>

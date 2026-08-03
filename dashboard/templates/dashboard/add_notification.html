@@ -1,0 +1,172 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow mt-4">
+
+                <div class="card-header"
+                     style="background:#0A1F44; color:white;">
+
+                    <h4>
+                        <i class="fas fa-calendar-plus"></i>
+                        Schedule Administrator Activity
+                    </h4>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <p class="text-muted">
+                        Create a future reminder or administrative activity.
+                        The system will notify you before the scheduled time.
+                    </p>
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                <i class="fas fa-heading"></i>
+                                Activity Title
+                            </label>
+
+                            <input 
+                            type="text"
+                            name="title"
+                            class="form-control"
+                            placeholder="Example: ACC Monthly Review Meeting"
+                            required>
+
+                        </div>
+
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                <i class="fas fa-align-left"></i>
+                                Description
+
+                            </label>
+
+
+                            <textarea
+                            name="description"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Provide activity details..."></textarea>
+
+
+                        </div>
+
+
+
+
+                        <div class="row">
+
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    <i class="fas fa-calendar"></i>
+                                    Activity Date
+
+                                </label>
+
+
+                                <input
+                                type="date"
+                                name="date"
+                                class="form-control"
+                                required>
+
+
+                            </div>
+
+
+
+                            <div class="col-md-6">
+
+
+                                <label class="form-label">
+
+                                    <i class="fas fa-clock"></i>
+                                    Activity Time
+
+                                </label>
+
+
+                                <input
+                                type="time"
+                                name="time"
+                                class="form-control"
+                                required>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <hr>
+
+
+                        <div class="d-flex justify-content-between">
+
+
+                            <a href="{% url 'dashboard' %}"
+                               class="btn btn-secondary">
+
+                                <i class="fas fa-arrow-left"></i>
+                                Cancel
+
+                            </a>
+
+
+
+                            <button type="submit"
+                                    class="btn"
+                                    style="background:#B11226;color:white;">
+
+                                <i class="fas fa-save"></i>
+                                Save Activity
+
+                            </button>
+
+
+                        </div>
+
+
+
+                    </form>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

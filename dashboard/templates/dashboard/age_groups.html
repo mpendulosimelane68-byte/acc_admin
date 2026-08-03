@@ -1,0 +1,467 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+    <div class="mb-4">
+
+        <h3 style="color:#0A1F44;font-weight:700;">
+            Age Group Analysis
+        </h3>
+
+        <p class="text-muted">
+            Distribution of reported cases by age group
+        </p>
+
+    </div>
+
+<!-- Export Button -->
+<div class="d-flex justify-content-end my-4">
+
+    <a href="{% url 'export_age_groups_excel' %}" 
+       class="excel-btn">
+        Export to Excel
+    </a>
+
+</div>
+
+
+    <div class="row">
+
+
+
+        <!-- LINE CHART -->
+
+        <div class="col-lg-8 mb-4">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-header bg-white">
+
+                    <h5 style="color:#0A1F44;">
+                        Cases By Age Group
+                    </h5>
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+                    <div style="height:320px;">
+
+                        <canvas id="lineChart"></canvas>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <!-- PIE CHART -->
+
+
+        <div class="col-lg-4 mb-4">
+
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+
+                <div class="card-header bg-white">
+
+                    <h5 style="color:#0A1F44;">
+                        Age Distribution
+                    </h5>
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+                    <div style="height:300px;">
+
+                        <canvas id="pieChart"></canvas>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- SUMMARY TABLE -->
+
+
+    <div class="card shadow-sm border-0 rounded-4 mt-3">
+
+
+        <div class="card-header bg-white">
+
+            <h5 style="color:#0A1F44;font-weight:700;">
+                Age Group Summary
+            </h5>
+
+        </div>
+
+
+
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-hover align-middle">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Age Group
+                            </th>
+
+
+                            <th>
+                                Cases
+                            </th>
+
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+    <tr>
+        <td>Under 18</td>
+        <td>{{ under_18 }}</td>
+        <td>{{ under_18_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>18 - 24</td>
+        <td>{{ age_18_24 }}</td>
+        <td>{{ age_18_24_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>25 - 34</td>
+        <td>{{ age_25_34 }}</td>
+        <td>{{ age_25_34_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>35 - 44</td>
+        <td>{{ age_35_44 }}</td>
+        <td>{{ age_35_44_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>45 - 54</td>
+        <td>{{ age_45_54 }}</td>
+        <td>{{ age_45_54_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>55 - 64</td>
+        <td>{{ age_55_64 }}</td>
+        <td>{{ age_55_64_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>65+</td>
+        <td>{{ above_65 }}</td>
+        <td>{{ above_65_percentage }}%</td>
+    </tr>
+
+
+    <tr>
+        <td>None</td>
+        <td>{{ none_cases }}</td>
+        <td>{{ none_cases_percentage }}%</td>
+    </tr>
+
+
+</tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+<script>
+
+
+const labels = [
+
+"Under 18",
+"18 - 24",
+"25 - 34",
+"35 - 44",
+"45 - 54",
+"55 - 64",
+"Above 65+",
+"None"
+
+];
+
+
+
+
+const data = [
+
+Number("{{ under_18|default:'0' }}"),
+
+Number("{{ age_18_24|default:'0' }}"),
+
+Number("{{ age_25_34|default:'0' }}"),
+
+Number("{{ age_35_44|default:'0' }}"),
+
+Number("{{ age_45_54|default:'0' }}"),
+
+Number("{{ age_55_64|default:'0' }}"),
+
+Number("{{ above_65|default:'0' }}"),
+
+Number("{{ none_cases|default:'0' }}")
+
+];
+
+
+
+
+
+
+
+new Chart(
+
+document.getElementById("lineChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+
+datasets:[{
+
+label:"Cases",
+
+data:data,
+
+borderColor:"#0A1F44",
+
+borderWidth:3,
+
+tension:0.35,
+
+fill:false,
+
+pointRadius:5
+
+}]
+
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+scales:{
+
+y:{
+
+beginAtZero:true,
+
+ticks:{
+
+stepSize:1
+
+}
+
+}
+
+}
+
+
+}
+
+
+}
+
+);
+
+
+
+
+
+
+
+
+
+new Chart(
+
+document.getElementById("pieChart"),
+
+{
+
+type:"doughnut",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+data:data,
+
+backgroundColor:[
+
+"#0A1F44",
+"#B11226",
+"#198754",
+"#ffc107",
+"#6f42c1",
+"#0dcaf0",
+"#fd7e14",
+"#adb5bd"
+
+]
+
+}]
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+
+plugins:{
+
+
+legend:{
+
+position:"bottom"
+
+},
+
+
+datalabels:{
+
+color:"#fff",
+
+font:{
+
+weight:"bold"
+
+},
+
+
+formatter:function(value){
+
+let total = data.reduce(
+(a,b)=>a+b,
+0
+);
+
+let percentage = (
+(value / total) * 100
+).toFixed(1);
+
+
+return percentage + "%";
+
+}
+
+}
+
+
+}
+
+
+},
+
+
+plugins:[ChartDataLabels]
+
+
+}
+
+);
+
+</script>
+
+
+
+{% endblock %}

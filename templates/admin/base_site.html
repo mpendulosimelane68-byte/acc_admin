@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+
+{% block branding %}
+
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        ACC Case Management System
+    </a>
+</h1>
+
+{% endblock %}
+
+
+{% block extrastyle %}
+
+<style>
+
+#header {
+    background: #0A1F44;
+}
+
+
+#branding h1 a {
+    color: white;
+    font-weight: 700;
+}
+
+
+div.breadcrumbs {
+    background: #B11226;
+}
+
+
+.module h2,
+.module caption {
+    background: #0A1F44;
+}
+
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input {
+    background: #0A1F44;
+}
+
+
+.button:hover,
+input[type=submit]:hover {
+    background: #B11226;
+}
+
+</style>
+
+{% endblock %}

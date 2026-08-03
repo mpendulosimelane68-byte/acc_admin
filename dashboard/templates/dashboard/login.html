@@ -1,0 +1,418 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+ACC Administrator Portal
+</title>
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0A1F44,
+        #1b3a6f,
+        #B11226
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+/* Login Container */
+
+.login-container{
+
+    width:420px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.3);
+
+}
+
+
+
+/* Logos */
+
+.logo-section{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+.logo-section img{
+
+    width:85px;
+
+    height:85px;
+
+    object-fit:contain;
+
+}
+
+
+
+/* Title */
+
+h2{
+
+    text-align:center;
+
+    color:#0A1F44;
+
+    margin-bottom:8px;
+
+}
+
+
+.subtitle{
+
+    text-align:center;
+
+    color:#555;
+
+    margin-bottom:25px;
+
+    font-size:14px;
+
+}
+
+
+
+/* Inputs */
+
+
+label{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    color:#0A1F44;
+
+    font-weight:bold;
+
+}
+
+
+input{
+
+    width:100%;
+
+    padding:13px;
+
+    margin-bottom:18px;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+
+    outline:none;
+
+}
+
+
+input:focus{
+
+    border-color:#B11226;
+
+}
+
+
+
+/* Button */
+
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    background:#0A1F44;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+    background:#B11226;
+
+}
+
+
+
+/* Forgot password */
+
+
+.forgot{
+
+    display:block;
+
+    text-align:center;
+
+    margin-top:18px;
+
+    color:#B11226;
+
+    text-decoration:none;
+
+}
+
+
+
+/* Messages */
+
+.message{
+
+    color:#B11226;
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+}
+
+
+/* Eswatini colour strip */
+
+.flag-strip{
+
+    height:8px;
+
+    margin-top:25px;
+
+    border-radius:5px;
+
+    background:
+
+    linear-gradient(
+        to right,
+        #0047AB 33%,
+        #FFD700 33%,
+        #FFD700 66%,
+        #B11226 66%
+    );
+
+}
+.password-wrapper{
+    position:relative;
+}
+
+
+.password-wrapper input{
+    padding-right:45px;
+}
+
+
+.show-password{
+
+    position:absolute;
+
+    right:15px;
+
+    top:40%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#0A1F44;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="login-container">
+
+
+<div class="logo-section">
+
+
+<!-- ACC LOGO -->
+
+<img src="{% static 'images/logo33.png' %}"
+alt="ACC Logo">
+
+
+
+<!-- ESWATINI LOGO -->
+
+<img src="{% static 'images/logo22.png' %}"
+alt="Eswatini Logo">
+
+
+
+</div>
+
+
+
+<h2>
+ACC Administrator Portal
+</h2>
+
+
+<p class="subtitle">
+Anti-Corruption Commission
+<br>
+Secure Management System
+</p>
+
+
+
+{% for message in messages %}
+
+<p class="message">
+{{ message }}
+</p>
+
+{% endfor %}
+
+
+
+<form method="POST">
+
+{% csrf_token %}
+
+
+<label>
+Username
+</label>
+
+<input
+type="text"
+name="username"
+placeholder="Enter username"
+required>
+
+
+
+<label>
+Password
+</label>
+
+
+<div class="password-wrapper">
+
+    <input
+    type="password"
+    id="login-password"
+    name="password"
+    placeholder="Enter password"
+    autocomplete="current-password"
+    required>
+
+    <span class="show-password" onclick="toggleLoginPassword()">
+    👁
+</span>
+
+</div>
+
+
+<button type="submit">
+
+Login
+
+</button>
+
+
+</form>
+
+
+
+<a class="forgot" href="{% url 'password_reset' %}">
+
+Forgot Password?
+
+</a>
+
+
+
+<div class="flag-strip"></div>
+
+
+</div>
+
+
+</body>
+
+
+</html>
+<script>
+
+function toggleLoginPassword(){
+
+    const passwordField = document.getElementById("login-password");
+
+    if (passwordField.type === "password") {
+
+        passwordField.type = "text";
+
+    } else {
+
+        passwordField.type = "password";
+
+    }
+
+}
+
+</script>

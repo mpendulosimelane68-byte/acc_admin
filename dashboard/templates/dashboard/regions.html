@@ -1,0 +1,503 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="analytics-page">
+
+    <h2 class="title mb-4">
+        Regional Analysis
+    </h2>
+<div class="export-button-container">
+
+<div class="export-button-container">
+
+<a href="{% url 'export_region_excel' %}"
+class="btn btn-success">
+    Export Regional Analytics
+</a>
+
+</div>
+
+</div>
+
+    <!-- REGION SUMMARY CARDS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="analytics-card hhohho">
+                <h5>Hhohho</h5>
+                <h1>{{ hhohho }}</h1>
+                <p>Cases</p>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="analytics-card manzini">
+                <h5>Manzini</h5>
+                <h1>{{ manzini }}</h1>
+                <p>Cases</p>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="analytics-card lubombo">
+                <h5>Lubombo</h5>
+                <h1>{{ lubombo }}</h1>
+                <p>Cases</p>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="analytics-card shiselweni">
+                <h5>Shiselweni</h5>
+                <h1>{{ shiselweni }}</h1>
+                <p>Cases</p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- CHART AREA -->
+
+    <div class="row">
+
+        <div class="col-md-7">
+
+            <div class="chart-box">
+
+                <h5>Cases by Region</h5>
+
+                <canvas id="regionChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-5">
+
+            <div class="chart-box">
+
+                <h5>Regional Distribution</h5>
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        </div>
+
+
+</div>
+
+
+<!-- REGIONAL SUMMARY TABLE -->
+
+<div class="card mt-4">
+
+    <div class="card-header">
+        Regional Summary
+    </div>
+
+
+    <div class="card-body">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Region</th>
+                    <th>Cases</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+            {% for region in region_summary %}
+
+                <tr>
+
+                    <td>
+                        {{ region.name }}
+                    </td>
+
+
+                    <td>
+                        {{ region.count }}
+                    </td>
+
+
+                    <td>
+                        {{ region.percentage }}%
+                    </td>
+
+                </tr>
+
+            {% empty %}
+
+                <tr>
+                    <td colspan="3">
+                        No regional data available
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+<script>
+
+
+const regionLabels = [
+
+    "Hhohho",
+    "Manzini",
+    "Lubombo",
+    "Shiselweni"
+
+];
+
+
+const regionValues = [
+
+    Number("{{ hhohho|default:'0' }}"),
+    Number("{{ manzini|default:'0' }}"),
+    Number("{{ lubombo|default:'0' }}"),
+    Number("{{ shiselweni|default:'0' }}")
+
+];
+
+
+
+const regionData = {
+
+    labels: regionLabels,
+
+    datasets: [
+
+        {
+
+            label: "Cases",
+
+            data: regionValues,
+
+            backgroundColor: [
+
+                "#0A1F44",
+                "#B11226",
+                "#198754",
+                "#856404"
+
+            ]
+
+        }
+
+    ]
+
+};
+
+
+
+// BAR CHART
+
+new Chart(
+
+    document.getElementById("regionChart"),
+
+    {
+
+        type: "bar",
+
+        data: regionData,
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+
+// DOUGHNUT CHART
+
+new Chart(
+
+    document.getElementById("pieChart"),
+
+    {
+
+        type: "doughnut",
+
+        data: regionData,
+
+        plugins: [ChartDataLabels],
+
+        options: {
+
+            responsive: true,
+
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                },
+
+
+                datalabels: {
+
+                    color: "#ffffff",
+
+                    font: {
+
+                        weight: "bold",
+
+                        size: 14
+
+                    },
+
+
+                    formatter: function(value, context) {
+
+                        let total = context.chart.data.datasets[0].data
+                            .reduce((a, b) => a + b, 0);
+
+
+                        if(total === 0){
+
+                            return "0%";
+
+                        }
+
+
+                        let percentage = (value / total * 100).toFixed(1);
+
+
+                        return percentage + "%";
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+
+</script>
+
+<script>
+
+new Chart(
+    document.getElementById("pieChart"),
+    {
+        type: "doughnut",
+        data: regionData,
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                },
+                datalabels: {
+                    color: "#ffffff",
+                    font: {
+                        weight: "bold",
+                        size: 14
+                    },
+                    formatter: function(value, context) {
+
+                        let total = context.chart.data.datasets[0].data
+                            .reduce((a, b) => a + b, 0);
+
+                        if(total === 0){
+                            return "0%";
+                        }
+
+                        let percentage = (value / total * 100).toFixed(1);
+
+                        return percentage + "%";
+                    }
+                }
+            }
+        }
+    }
+);
+
+</script>
+
+<style>
+
+
+.analytics-page {
+
+    background:#f4f6f9;
+
+    min-height:100vh;
+
+    padding:25px;
+
+}
+
+
+
+.title {
+
+    color:#0A1F44;
+
+    font-weight:700;
+
+}
+
+
+
+.analytics-card {
+
+    padding:25px;
+
+    border-radius:15px;
+
+    color:white;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+
+
+.analytics-card h1 {
+
+    font-size:45px;
+
+    margin:0;
+
+}
+
+
+
+.hhohho {
+
+    background:#0A1F44;
+
+}
+
+
+.manzini {
+
+    background:#B11226;
+
+}
+
+
+.lubombo {
+
+    background:#198754;
+
+}
+
+
+.shiselweni {
+
+    background:#856404;
+
+}
+
+
+
+.chart-box {
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+
+
+.chart-box h5 {
+
+    color:#0A1F44;
+
+    font-weight:700;
+
+    margin-bottom:20px;
+
+}
+
+.export-button-container {
+
+    margin-bottom: 25px;
+
+    margin-top: 10px;
+
+}
+
+</style>
+
+
+{% endblock %}

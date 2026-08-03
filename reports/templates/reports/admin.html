@@ -1,0 +1,24 @@
+{% extends 'reports/base.html' %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Code</th>
+        <th>Title</th>
+        <th>Message</th>
+        <th>Date</th>
+    </tr>
+
+    {% for r in reports %}
+    <tr>
+        <td>{{ r.code }}</td>
+        <td>{{ r.title }}</td>
+        <td>{{ r.message }}</td>
+        <td>{{ r.created_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

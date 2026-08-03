@@ -1,0 +1,572 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+<div class="mb-4">
+
+<h3 style="color:#0A1F44;font-weight:700;">
+Case Trends Analysis
+</h3>
+
+<p class="text-muted">
+Tracking reported cases over time
+</p>
+
+</div>
+
+
+<!-- Export Button -->
+<div class="d-flex justify-content-end my-4">
+
+    <a href="{% url 'export_trends_excel' %}" 
+       class="excel-btn">
+        Export to Excel
+    </a>
+
+</div>
+
+<div class="row">
+
+
+<!-- MONTHLY TREND -->
+
+<div class="col-lg-8 mb-4">
+
+
+<div class="card shadow-sm border-0 rounded-4">
+
+
+<div class="card-header bg-white">
+
+<h5 style="color:#0A1F44;">
+Monthly Reporting Trend
+</h5>
+
+</div>
+
+
+<div class="card-body">
+
+
+<div style="height:320px;">
+
+<canvas id="monthlyChart"></canvas>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- DISTRIBUTION -->
+
+<div class="col-lg-4 mb-4">
+
+
+<div class="card shadow-sm border-0 rounded-4">
+
+
+<div class="card-header bg-white">
+
+<h5 style="color:#0A1F44;">
+Case Distribution
+</h5>
+
+</div>
+
+
+<div class="card-body">
+
+
+<div style="height:280px;">
+
+<canvas id="trendPie"></canvas>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- STATUS TREND -->
+
+
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+
+
+<div class="card-header bg-white">
+
+<h5 style="color:#0A1F44;">
+Status Progression Trend
+</h5>
+
+</div>
+
+
+
+<div class="card-body">
+
+
+<div style="height:320px;">
+
+<canvas id="statusChart"></canvas>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+
+const monthlyLabels = JSON.parse('{{ monthly_labels|escapejs }}');
+
+const monthlyValues = JSON.parse('{{ monthly_values|escapejs }}');
+
+const statusLabels = JSON.parse('{{ status_labels|escapejs }}');
+
+const receivedValues = JSON.parse('{{ received_values|escapejs }}');
+
+const investigationValues = JSON.parse('{{ investigation_values|escapejs }}');
+
+const declinedValues = JSON.parse(
+    '{{ declined_values|escapejs }}'
+);
+const referralValues = JSON.parse(
+    '{{ referral_values|escapejs }}'
+);
+
+const closedValues = JSON.parse('{{ closed_values|escapejs }}');
+
+
+
+
+// MONTHLY TREND
+
+new Chart(
+
+document.getElementById("monthlyChart"),
+
+{
+
+type:"line",
+
+data:{
+
+labels: monthlyLabels,
+
+datasets:[{
+
+label:"Cases Reported",
+
+data: monthlyValues,
+
+borderColor:"#0A1F44",
+
+borderWidth:3,
+
+tension:0.3,
+
+fill:false
+
+}]
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false,
+
+scales:{
+
+y:{
+
+beginAtZero:true,
+
+ticks:{
+
+stepSize:1
+
+}
+
+}
+
+}
+
+}
+
+}
+
+);
+
+
+
+
+
+
+// CASE DISTRIBUTION
+
+
+new Chart(
+
+document.getElementById("trendPie"),
+
+{
+
+type:"pie",
+
+data:{
+
+
+labels: [
+    "Public Sector",
+    "Private Sector",
+    "None"
+],
+
+
+datasets:[{
+
+data:[
+
+    Number("{{ public_total|default:'0' }}"),
+
+    Number("{{ private_total|default:'0' }}"),
+
+    Number("{{ none_total|default:'0' }}")
+
+],
+
+
+backgroundColor:[
+    "#0A1F44",
+    "#B11226",
+    "#198754"
+]
+
+
+}]
+
+
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false
+
+}
+
+
+}
+
+);
+
+
+
+
+
+
+
+// STATUS TREND
+
+
+new Chart(
+
+document.getElementById("statusChart"),
+
+{
+
+type:"line",
+
+
+data:{
+
+
+labels: statusLabels,
+
+
+datasets:[
+
+{
+
+label:"Received",
+
+data:receivedValues,
+
+borderColor:"#0d6efd",
+
+borderWidth:3,
+
+tension:0.3
+
+},
+
+{
+
+label:"Under Investigation",
+
+data:investigationValues,
+
+borderColor:"#fd7e14",
+
+borderWidth:3,
+
+tension:0.3
+
+},
+
+{
+
+label:"Referral",
+
+data:referralValues,
+
+borderColor:"#0dcaf0",
+
+borderWidth:3,
+
+tension:0.3
+
+},
+
+{
+
+label:"Declined",
+
+data:declinedValues,
+
+borderColor:"#B11226",
+
+borderWidth:3,
+
+tension:0.3
+
+},
+
+{
+
+label:"Closed",
+
+data:closedValues,
+
+borderColor:"#6c757d",
+
+borderWidth:3,
+
+tension:0.3
+
+}
+
+]
+},
+
+
+options:{
+
+responsive:true,
+
+maintainAspectRatio:false
+
+}
+
+
+}
+
+);
+
+
+
+</script>
+<div class="card shadow-sm border-0 rounded-4 mt-5">
+
+    <div class="card-header bg-white">
+
+        <h5 style="color:#0A1F44;font-weight:700;">
+            Trends Summary
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Cases
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <tr>
+
+                        <td>Public Sector</td>
+
+                        <td>{{ public_total }}</td>
+
+                        <td>{{ public_percentage }}%</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Private Sector</td>
+
+                        <td>{{ private_total }}</td>
+
+                        <td>{{ private_percentage }}%</td>
+
+                    </tr>
+<tr>
+
+    <td>None</td>
+
+    <td>{{ none_total }}</td>
+
+    <td>{{ none_percentage }}%</td>
+
+</tr>
+
+                    <tr>
+
+                        <td>Received</td>
+
+                        <td>{{ received }}</td>
+
+                        <td>{{ received_percentage }}%</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Under Investigation</td>
+
+                        <td>{{ investigation }}</td>
+
+                        <td>{{ investigation_percentage }}%</td>
+
+                    </tr>
+
+                        <tr>
+
+    <td>Declined</td>
+
+    <td>{{ declined }}</td>
+
+    <td>{{ declined_percentage }}%</td>
+
+</tr>
+                    <tr>
+
+                        <td>Referral</td>
+
+                        <td>{{ referral }}</td>
+
+                        <td>{{ referral_percentage }}%</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Closed</td>
+
+                        <td>{{ closed }}</td>
+
+                        <td>{{ closed_percentage }}%</td>
+
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}

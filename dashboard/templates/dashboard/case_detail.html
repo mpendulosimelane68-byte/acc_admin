@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Case Detail</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+    <style>
+
+        @media print {
+
+            .no-print {
+
+                display: none !important;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-4">
+
+        <h3>
+
+            Case:
+            {{ case.case_code }}
+
+        </h3>
+
+        <div class="card p-4 shadow-sm">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <p>
+
+                        <b>Region:</b>
+
+                        {{ case.region }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Location:</b>
+
+                        {{ case.location }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Status:</b>
+
+                        {{ case.get_status_display }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Sector:</b>
+
+                        {{ case.get_sector_display }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Institution:</b>
+
+                        {{ case.institution }}
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <p>
+
+                        <b>Gender:</b>
+
+                        {{ case.gender }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Age Group:</b>
+
+                        {{ case.age_group }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Incident Date:</b>
+
+                        {{ case.incident_date }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Incident Time:</b>
+
+                        {{ case.incident_time }}
+
+                    </p>
+
+                    <p>
+
+                        <b>Amount:</b>
+
+                        {{ case.amount }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h5>Description</h5>
+
+            <p>
+
+                {{ case.description }}
+
+            </p>
+
+            {% if case.status == "referral" and case.referral_notes %}
+
+                <hr>
+
+                <h5 class="text-info">
+
+                    Referral Notes
+
+                </h5>
+
+                <div class="alert alert-info">
+
+                    {{ case.referral_notes }}
+
+                </div>
+
+            {% endif %}
+
+            {% if case.status == "declined" and case.decline_reason %}
+
+<hr>
+
+<h5 class="text-danger">
+    Decline Reason
+</h5>
+
+<div class="alert alert-danger">
+
+    {{ case.decline_reason }}
+
+</div>
+
+{% endif %}
+
+            <hr>
+<div class="no-print">
+  <h5>Update Case Status</h5>
+
+<a
+    href="{% url 'update_case_status' case.id 'received' %}"
+    class="btn btn-primary btn-sm"
+>
+    Received
+</a>
+
+<a
+    href="{% url 'update_case_status' case.id 'investigation' %}"
+    class="btn btn-warning btn-sm"
+>
+    Under Investigation
+</a>
+
+<a
+    href="{% url 'update_status' case.id %}"
+    class="btn btn-info btn-sm"
+>
+    Referral
+</a>
+
+<a
+    href="{% url 'update_status' case.id %}"
+    class="btn btn-danger btn-sm"
+>
+    Declined
+</a>
+
+<a
+    href="{% url 'update_case_status' case.id 'closed' %}"
+    class="btn btn-dark btn-sm"
+>
+    Closed
+</a>
+
+            <hr>
+
+            <h5>Evidence</h5>
+
+            {% if case.evidence %}
+
+               {% if case.evidence %}
+
+<h6 class="mt-3">Evidence</h6>
+
+{% with file=case.evidence.url %}
+
+{% if ".png" in file or ".jpg" in file or ".jpeg" in file %}
+
+<img src="{{ file }}" 
+     class="img-fluid rounded"
+     style="max-width:500px;">
+
+
+{% elif ".mp4" in file or ".webm" in file %}
+
+<video controls width="500">
+    <source src="{{ file }}">
+    Your browser does not support video.
+</video>
+
+
+{% elif ".mp3" in file or ".wav" in file %}
+
+<audio controls>
+    <source src="{{ file }}">
+    Your browser does not support audio.
+</audio>
+
+
+{% elif ".txt" in file %}
+
+<a href="{{ file }}" target="_blank" class="btn btn-outline-primary btn-sm">
+    Open Text Evidence
+</a>
+
+
+{% else %}
+
+<a href="{{ file }}" 
+   target="_blank"
+   class="btn btn-outline-primary btn-sm">
+
+    View / Download Evidence
+
+</a>
+
+{% endif %}
+
+{% endwith %}
+
+{% else %}
+
+<p class="text-muted">
+    No evidence attached
+</p>
+
+{% endif %}
+
+            {% else %}
+
+                <p class="text-muted">
+
+                    No evidence uploaded by reporter
+
+                </p>
+
+            {% endif %}
+
+            <hr>
+
+            <button
+                onclick="window.print()"
+                class="btn btn-outline-dark"
+            >
+
+                Print Case
+
+            </button>
+
+            <a
+                href="{% url 'cases' %}"
+                class="btn btn-secondary"
+            >
+
+                Back to Cases
+
+            </a>
+
+        </div>
+
+    </div>
+    </div>
+
+</body>
+
+</html>

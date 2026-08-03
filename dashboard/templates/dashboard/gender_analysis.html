@@ -1,0 +1,247 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">
+        Gender Analysis
+    </h2>
+<!-- Export Button -->
+<div class="d-flex justify-content-end my-4">
+
+    <a href="{% url 'export_gender_excel' %}" 
+       class="excel-btn">
+        Export to Excel
+    </a>
+
+</div>
+    <!-- SUMMARY CARDS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card shadow text-white" style="background-color: #0A1F44;">
+
+                <div class="card-body text-center">
+
+                    <h5>Male</h5>
+
+                    <h1>{{ male }}</h1>
+
+                    <p>Total Cases</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow text-white" style="background-color: #B11226;">
+
+                <div class="card-body text-center">
+
+                    <h5>Female</h5>
+
+                    <h1>{{ female }}</h1>
+
+                    <p>Total Cases</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="row">
+
+        <div class="col-md-7">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Cases by Gender
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="genderBarChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-5">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Gender Distribution
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="genderPieChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const genderData = {
+
+    labels: [
+
+        "Male",
+        "Female"
+
+    ],
+
+    datasets: [
+
+        {
+
+            label: "Cases",
+
+            data: [
+
+                Number("{{ male|default:'0' }}"),
+                Number("{{ female|default:'0' }}")
+
+            ],
+
+            backgroundColor: [
+
+                "#0A1F44",
+                "#B11226"
+
+            ]
+
+        }
+
+    ]
+
+};
+
+
+new Chart(
+
+    document.getElementById("genderBarChart"),
+
+    {
+
+        type: "bar",
+
+        data: genderData,
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+new Chart(
+
+    document.getElementById("genderPieChart"),
+
+    {
+
+        type: "doughnut",
+
+        data: genderData,
+
+        options: {
+
+            responsive: true
+
+        }
+
+    }
+
+);
+
+</script>
+<div class="card shadow-sm border-0 rounded-4 mt-5">
+
+    <div class="card-body">
+
+        <h4 class="mb-4">
+            Gender Summary
+        </h4>
+
+
+        <table class="table table-bordered text-center">
+
+            <thead>
+                <tr>
+                    <th>Gender</th>
+                    <th>Total Cases</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+                    <td>Male</td>
+                    <td>{{ male }}</td>
+                    <td>{{ male_percentage }}%</td>
+                </tr>
+
+
+                <tr>
+                    <td>Female</td>
+                    <td>{{ female }}</td>
+                    <td>{{ female_percentage }}%</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
