@@ -674,35 +674,42 @@ def receive_report(request):
     try:
         data = request.POST
 
-        username = data.get("username", "").strip()
-
-        if not username:
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error": "Username is required"
-                },
-                status=400
-            )
-
-        try:
-            account = AnonymousAccount.objects.get(
-                username=username
-            )
-        except AnonymousAccount.DoesNotExist:
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error": "Anonymous account not found"
-                },
-                status=401
-            )
-
         is_anonymous = data.get(
-            "is_anonymous",
-            "true"
-        ).lower() == "true"
+    "is_anonymous",
+    "true"
+).lower() == "true"
 
+account = None
+
+if is_anonymous:
+
+    username = data.get(
+        "username",
+        ""
+    ).strip()
+
+    if not username:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Username is required"
+            },
+            status=400
+        )
+
+    try:
+        account = AnonymousAccount.objects.get(
+            username=username
+        )
+
+    except AnonymousAccount.DoesNotExist:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Anonymous account not found"
+            },
+            status=401
+        )
         case = Case.objects.create(
 
             account=account,
