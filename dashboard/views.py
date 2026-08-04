@@ -675,46 +675,47 @@ def receive_report(request):
         data = request.POST
 
         is_anonymous = data.get(
-    "is_anonymous",
-    "true"
-).lower() == "true"
+            "is_anonymous",
+            "true"
+        ).lower() == "true"
 
-account = None
+        account = None
 
-if is_anonymous:
+        if is_anonymous:
 
-    username = data.get(
-        "username",
-        ""
-    ).strip()
+            username = data.get(
+                "username",
+                ""
+            ).strip()
 
-    if not username:
-        return JsonResponse(
-            {
-                "success": False,
-                "error": "Username is required"
-            },
-            status=400
-        )
+            if not username:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Username is required"
+                    },
+                    status=400
+                )
 
-    try:
-        account = AnonymousAccount.objects.get(
-            username=username
-        )
+            try:
+                account = AnonymousAccount.objects.get(
+                    username=username
+                )
 
-    except AnonymousAccount.DoesNotExist:
-        return JsonResponse(
-            {
-                "success": False,
-                "error": "Anonymous account not found"
-            },
-            status=401
-        )
+            except AnonymousAccount.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Anonymous account not found"
+                    },
+                    status=401
+                )
+
+
         case = Case.objects.create(
 
             account=account,
 
-            # Django generates the official unique case code
             case_code=generate_unique_case_code(),
 
             is_anonymous=is_anonymous,
@@ -746,21 +747,22 @@ if is_anonymous:
             evidence=request.FILES.get("evidence"),
         )
 
+
         return JsonResponse(
             {
                 "success": True,
 
-                # Return the official Django-generated code
                 "case_code": case.case_code,
 
                 "message": "Report received successfully",
 
                 "evidence_uploaded": bool(case.evidence),
 
-                "username": account.username,
+                "username": account.username if account else None,
             },
             status=201
         )
+
 
     except IntegrityError:
         return JsonResponse(
@@ -771,6 +773,7 @@ if is_anonymous:
             status=409
         )
 
+
     except Exception as e:
         return JsonResponse(
             {
@@ -779,7 +782,7 @@ if is_anonymous:
             },
             status=400
         )
-
+    
 @csrf_exempt
 def get_my_reports(request):
     if request.method != "GET":
