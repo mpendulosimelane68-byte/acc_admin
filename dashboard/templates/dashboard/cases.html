@@ -260,202 +260,187 @@ Closed
 
 
 
-    <!-- FILTERS -->
     <form method="GET" class="row g-3 mb-4">
 
+    <!-- SECTOR -->
+    <div class="col-md-2">
+        <label>Sector</label>
 
-        <div class="col-md-2">
-            <label>Sector</label>
+        <select name="sector" class="form-select">
 
-            <select name="sector" class="form-select">
+            <option value="">All</option>
 
-                <option value="">All</option>
-
-                <option value="public"
+            <option value="public"
                 {% if request.GET.sector == "public" %}selected{% endif %}>
-                    Public Institution
-                </option>
+                Public Institution
+            </option>
 
-                <option value="private"
+            <option value="private"
                 {% if request.GET.sector == "private" %}selected{% endif %}>
-                    Private Institution
-                </option>
+                Private Institution
+            </option>
 
-                <option value="none"
-        {% if request.GET.sector == "none" %}selected{% endif %}>
-            No Sector Selected
-        </option>
+            <option value="none"
+                {% if request.GET.sector == "none" %}selected{% endif %}>
+                No Sector Selected
+            </option>
 
-
-            </select>
-
-        </div>
+        </select>
+    </div>
 
 
+    <!-- REGION -->
+    <div class="col-md-2">
+        <label>Region</label>
 
-        <div class="col-md-2">
+        <select name="region" class="form-select">
 
-    <label>Region</label>
+            <option value="">All</option>
 
-    <select name="region" class="form-select">
+            <option value="Hhohho"
+                {% if request.GET.region == "Hhohho" %}selected{% endif %}>
+                Hhohho
+            </option>
 
-        <option value="">
-            All
-        </option>
+            <option value="Manzini"
+                {% if request.GET.region == "Manzini" %}selected{% endif %}>
+                Manzini
+            </option>
 
-        <option value="Hhohho"
-        {% if request.GET.region == "Hhohho" %}selected{% endif %}>
-            Hhohho
-        </option>
+            <option value="Lubombo"
+                {% if request.GET.region == "Lubombo" %}selected{% endif %}>
+                Lubombo
+            </option>
 
+            <option value="Shiselweni"
+                {% if request.GET.region == "Shiselweni" %}selected{% endif %}>
+                Shiselweni
+            </option>
 
-        <option value="Manzini"
-        {% if request.GET.region == "Manzini" %}selected{% endif %}>
-            Manzini
-        </option>
-
-
-        <option value="Lubombo"
-        {% if request.GET.region == "Lubombo" %}selected{% endif %}>
-            Lubombo
-        </option>
-
-
-        <option value="Shiselweni"
-        {% if request.GET.region == "Shiselweni" %}selected{% endif %}>
-            Shiselweni
-        </option>
-
-    </select>
-
-</div>
+        </select>
+    </div>
 
 
-        <div class="col-md-2">
+    <!-- STATUS -->
+    <div class="col-md-2">
+        <label>Status</label>
 
-            <label>Status</label>
+        <select name="status" class="form-select">
 
-            <select name="status" class="form-select">
+            <option value="">All</option>
 
-    <option value="">
-        All
-    </option>
+            <option value="received"
+                {% if request.GET.status == "received" %}selected{% endif %}>
+                Received
+            </option>
 
-    <option value="received"
-    {% if request.GET.status == "received" %}selected{% endif %}>
-        Received
-    </option>
+            <option value="investigation"
+                {% if request.GET.status == "investigation" %}selected{% endif %}>
+                Under Investigation
+            </option>
 
+            <option value="referral"
+                {% if request.GET.status == "referral" %}selected{% endif %}>
+                Referral
+            </option>
 
-    <option value="investigation"
-    {% if request.GET.status == "investigation" %}selected{% endif %}>
-        Under Investigation
-    </option>
+            <option value="closed"
+                {% if request.GET.status == "closed" %}selected{% endif %}>
+                Closed
+            </option>
 
-    <option value="referral"
-    {% if request.GET.status == "referral" %}selected{% endif %}>
-        Referral
-    </option>
+            <option value="declined"
+                {% if request.GET.status == "declined" %}selected{% endif %}>
+                Declined
+            </option>
 
-    <option value="closed"
-    {% if request.GET.status == "closed" %}selected{% endif %}>
-        Closed
-    </option>
-
-    <option value="declined"
-    {% if request.GET.status == "declined" %}selected{% endif %}>
-        Declined
-    </option>
-
-</select>
-        </div>
+        </select>
+    </div>
 
 
-        <!-- GENDER FILTER -->
+    <!-- GENDER -->
+    <div class="col-md-2">
+        <label>Gender</label>
 
-        <div class="col-md-2">
+        <select name="gender" class="form-select">
 
-            <label>Gender</label>
+            <option value="">All</option>
 
-            <select name="gender" class="form-select">
-
-                <option value="">
-                    All
-                </option>
-
-
-                <option value="male"
+            <option value="male"
                 {% if request.GET.gender == "male" %}selected{% endif %}>
-                    Male
-                </option>
+                Male
+            </option>
 
-
-                <option value="female"
+            <option value="female"
                 {% if request.GET.gender == "female" %}selected{% endif %}>
-                    Female
-                </option>
+                Female
+            </option>
+
+        </select>
+    </div>
 
 
-           <div class="col-md-2">
+    <!-- AGE GROUP -->
+    <div class="col-md-2">
+        <label for="age_group" class="form-label">
+            Age Group
+        </label>
 
-    <label for="age_group" class="form-label">
-        Age Group
-    </label>
+        <select name="age_group"
+                id="age_group"
+                class="form-select">
 
-    <select name="age_group" id="age_group" class="form-select">
+            <option value="">All</option>
 
-        <option value="">
-            All
-        </option>
+            <option value="under18"
+                {% if request.GET.age_group == "under18" %}selected{% endif %}>
+                Under 18
+            </option>
 
-        <option value="under18">
-            Under 18
-        </option>
+            <option value="18_24"
+                {% if request.GET.age_group == "18_24" %}selected{% endif %}>
+                18 - 24
+            </option>
 
-        <option value="18_24">
-            18 - 24
-        </option>
+            <option value="25_34"
+                {% if request.GET.age_group == "25_34" %}selected{% endif %}>
+                25 - 34
+            </option>
 
-        <option value="25_34">
-            25 - 34
-        </option>
+            <option value="35_44"
+                {% if request.GET.age_group == "35_44" %}selected{% endif %}>
+                35 - 44
+            </option>
 
-        <option value="35_44">
-            35 - 44
-        </option>
+            <option value="45_54"
+                {% if request.GET.age_group == "45_54" %}selected{% endif %}>
+                45 - 54
+            </option>
 
-        <option value="45_54">
-            45 - 54
-        </option>
+            <option value="55_64"
+                {% if request.GET.age_group == "55_64" %}selected{% endif %}>
+                55 - 64
+            </option>
 
-        <option value="55_64">
-            55 - 64
-        </option>
+            <option value="65+"
+                {% if request.GET.age_group == "65+" %}selected{% endif %}>
+                65+
+            </option>
 
-        <option value="65+">
-            65+
-        </option>
-
-    </select>
-
-</div>
-
-
-
-
-        <div class="col-md-2 d-flex align-items-end">
-
-            <button class="btn btn-primary w-100">
-                Filter
-            </button>
-
-        </div>
+        </select>
+    </div>
 
 
-    </form>
+    <!-- FILTER BUTTON -->
+    <div class="col-md-2 d-flex align-items-end">
 
+        <button type="submit" class="btn btn-primary w-100">
+            Filter
+        </button>
 
+    </div>
 
+</form>
 
     <!-- CASE TABLE -->
 
