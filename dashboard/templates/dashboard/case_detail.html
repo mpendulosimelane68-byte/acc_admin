@@ -35,6 +35,72 @@
 
         </h3>
 
+{% if case.is_anonymous %}
+
+    <div class="alert alert-secondary mb-4">
+        <strong>Reporter:</strong> Anonymous
+        <br>
+        <small class="text-muted">
+            The reporter chose not to reveal their personal details.
+        </small>
+    </div>
+
+{% else %}
+
+    <div class="card border-primary mb-4">
+        <div class="card-header">
+            <strong>Reporter Information</strong>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <p>
+                        <strong>Name:</strong>
+                        {{ case.name|default:"Not provided" }}
+                    </p>
+
+                    <p>
+                        <strong>Surname:</strong>
+                        {{ case.surname|default:"Not provided" }}
+                    </p>
+
+                    <p>
+                        <strong>Contact:</strong>
+                        {{ case.contact|default:"Not provided" }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        {{ case.email|default:"Not provided" }}
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <p>
+                        <strong>ID Number:</strong>
+                        {{ case.id_number|default:"Not provided" }}
+                    </p>
+
+                    <p>
+                        <strong>Nationality:</strong>
+                        {{ case.nationality|default:"Not provided" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endif %}
+
 
         <div class="card p-4 shadow-sm">
 
