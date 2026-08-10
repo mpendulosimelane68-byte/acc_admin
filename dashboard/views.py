@@ -674,10 +674,9 @@ def receive_report(request):
     try:
         data = request.POST
 
-        is_anonymous = data.get(
-            "is_anonymous",
-            "true"
-        ).lower() == "true"
+        is_anonymous = str(
+        data.get("is_anonymous", "false")
+       ).lower() == "true"
 
         account = None
 
