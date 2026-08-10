@@ -42,10 +42,31 @@ class CaseForm(forms.ModelForm):
         fields = "__all__"
 
         widgets = {
+            "is_anonymous": forms.CheckboxInput(
+                attrs={
+                    "class": "form-check-input",
+                }
+            ),
+
             "institution": forms.Select(
                 choices=[]
-            )
+            ),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        is_anonymous = cleaned_data.get("is_anonymous")
+
+        if is_anonymous:
+            cleaned_data["name"] = None
+            cleaned_data["surname"] = None
+            cleaned_data["contact"] = None
+            cleaned_data["email"] = None
+            cleaned_data["id_number"] = None
+            cleaned_data["nationality"] = None
+
+        return cleaned_data
 
 from .models import OrganisationSettings
 
