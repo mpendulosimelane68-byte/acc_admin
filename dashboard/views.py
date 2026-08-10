@@ -667,56 +667,62 @@ def receive_report(request):
 
     if request.method != "POST":
         return JsonResponse(
-            {"error": "Only POST requests are allowed"},
+            {
+                "success": False,
+                "error": "Only POST requests are allowed"
+            },
             status=405
         )
 
     try:
         data = request.POST
 
-        is_anonymous = str(
-        data.get("is_anonymous", "false")
-       ).lower() == "true"
+        is_anonymous = (
+            str(data.get("is_anonymous", "false")).lower() == "true"
+        )
 
-        account = None
+        # ------------------------------------------------------------
+        # GET THE ACCOUNT THAT SUBMITTED THE REPORT
+        # ------------------------------------------------------------
 
-        if is_anonymous:
+        username = data.get("username", "").strip()
 
-            username = data.get(
-                "username",
-                ""
-            ).strip()
+        if not username:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Username is required"
+                },
+                status=400
+            )
 
-            if not username:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Username is required"
-                    },
-                    status=400
-                )
+        try:
+            account = AnonymousAccount.objects.get(
+                username=username
+            )
 
-            try:
-                account = AnonymousAccount.objects.get(
-                    username=username
-                )
+        except AnonymousAccount.DoesNotExist:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Account not found"
+                },
+                status=401
+            )
 
-            except AnonymousAccount.DoesNotExist:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Anonymous account not found"
-                    },
-                    status=401
-                )
-
+        # ------------------------------------------------------------
+        # CREATE CASE
+        # ------------------------------------------------------------
 
         case = Case.objects.create(
 
+            # Account identifies who submitted the report.
+            # It does NOT determine whether the report is anonymous.
             account=account,
 
             case_code=generate_unique_case_code(),
 
+            # This describes THIS report only.
             is_anonymous=is_anonymous,
 
             name=data.get("name") or None,
@@ -724,11 +730,10 @@ def receive_report(request):
             contact=data.get("contact") or None,
             email=data.get("email") or None,
             id_number=data.get("id_number") or None,
+            nationality=data.get("nationality") or None,
 
             region=data.get("region") or None,
             location=data.get("location") or None,
-
-            nationality=data.get("nationality") or None,
 
             incident_date=data.get("incident_date") or None,
             incident_time=data.get("incident_time") or None,
@@ -746,32 +751,28 @@ def receive_report(request):
             evidence=request.FILES.get("evidence"),
         )
 
-
         return JsonResponse(
             {
                 "success": True,
-
                 "case_code": case.case_code,
-
                 "message": "Report received successfully",
-
                 "evidence_uploaded": bool(case.evidence),
-
-                "username": account.username if account else None,
+                "username": account.username,
             },
             status=201
         )
-
 
     except IntegrityError:
         return JsonResponse(
             {
                 "success": False,
-                "error": "A case code conflict occurred. Please submit the report again."
+                "error": (
+                    "A case code conflict occurred. "
+                    "Please submit the report again."
+                )
             },
             status=409
         )
-
 
     except Exception as e:
         return JsonResponse(
@@ -781,9 +782,10 @@ def receive_report(request):
             },
             status=400
         )
-    
+
 @csrf_exempt
 def get_my_reports(request):
+
     if request.method != "GET":
         return JsonResponse(
             {
@@ -793,51 +795,46 @@ def get_my_reports(request):
             status=405
         )
 
+    # ============================================================
+    # GET LOGGED-IN ACCOUNT
+    # ============================================================
+
     username = request.GET.get("username", "").strip()
-    id_number = request.GET.get("id_number", "").strip()
 
-    # ============================================================
-    # FIND REPORTS
-    # ============================================================
-
-    if username:
-        # -----------------------------------------
-        # ANONYMOUS REPORTS
-        # -----------------------------------------
-        try:
-            account = AnonymousAccount.objects.get(
-                username=username
-            )
-        except AnonymousAccount.DoesNotExist:
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error": "Anonymous account not found"
-                },
-                status=404
-            )
-
-        cases = Case.objects.filter(
-            account=account
-        ).order_by("-created_at")
-
-    elif id_number:
-        # -----------------------------------------
-        # NON-ANONYMOUS REPORTS
-        # -----------------------------------------
-        cases = Case.objects.filter(
-            is_anonymous=False,
-            id_number=id_number
-        ).order_by("-created_at")
-
-    else:
+    if not username:
         return JsonResponse(
             {
                 "success": False,
-                "error": "Username or ID number is required"
+                "error": "Username is required"
             },
             status=400
         )
+
+    # ============================================================
+    # FIND ACCOUNT
+    # ============================================================
+
+    try:
+        account = AnonymousAccount.objects.get(
+            username=username
+        )
+
+    except AnonymousAccount.DoesNotExist:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Account not found"
+            },
+            status=404
+        )
+
+    # ============================================================
+    # GET ALL REPORTS SUBMITTED BY THIS ACCOUNT
+    # ============================================================
+
+    cases = Case.objects.filter(
+        account=account
+    ).order_by("-created_at")
 
     # ============================================================
     # BUILD RESPONSE
@@ -846,74 +843,86 @@ def get_my_reports(request):
     reports = []
 
     for case in cases:
-        reports.append({
-            "id": case.id,
 
-            "case_code": case.case_code,
+        reports.append(
+            {
+                "id": case.id,
 
-            "is_anonymous": case.is_anonymous,
+                "case_code": case.case_code,
 
-            "id_number": case.id_number,
+                # IMPORTANT:
+                # This tells Flutter whether THIS report
+                # was anonymous or not.
+                "is_anonymous": case.is_anonymous,
 
-            "name": case.name,
+                "id_number": case.id_number,
 
-            "surname": case.surname,
+                "name": case.name,
 
-            "contact": case.contact,
+                "surname": case.surname,
 
-            "email": case.email,
+                "contact": case.contact,
 
-            "place": case.location,
+                "email": case.email,
 
-            "date": (
-                case.incident_date.isoformat()
-                if case.incident_date
-                else None
-            ),
+                "place": case.location,
 
-            "time": (
-                case.incident_time.isoformat()
-                if case.incident_time
-                else None
-            ),
+                "date": (
+                    case.incident_date.isoformat()
+                    if case.incident_date
+                    else None
+                ),
 
-            "department": "",
+                "time": (
+                    case.incident_time.isoformat()
+                    if case.incident_time
+                    else None
+                ),
 
-            "description": case.description,
+                "department": "",
 
-            "attachments": (
-                [case.evidence.url]
-                if case.evidence
-                else []
-            ),
+                "description": case.description,
 
-            "status": case.status,
+                "attachments": (
+                    [case.evidence.url]
+                    if case.evidence
+                    else []
+                ),
 
-            "created_at": case.created_at.isoformat(),
+                "status": case.status,
 
-            "nationality": case.nationality,
+                "created_at": case.created_at.isoformat(),
 
-            "gender": case.gender,
+                "nationality": case.nationality,
 
-            "age": case.age_group,
+                "gender": case.gender,
 
-            "region": case.region,
+                "age": case.age_group,
 
-            "sector": case.sector,
+                "region": case.region,
 
-            "institution": case.institution,
+                "sector": case.sector,
 
-            "amount_paid": (
-                str(case.amount)
-                if case.amount is not None
-                else None
-            ),
-        })
+                "institution": case.institution,
 
-    return JsonResponse({
-        "success": True,
-        "reports": reports,
-    })
+                "amount_paid": (
+                    str(case.amount)
+                    if case.amount is not None
+                    else None
+                ),
+            }
+        )
+
+    # ============================================================
+    # RETURN REPORTS
+    # ============================================================
+
+    return JsonResponse(
+        {
+            "success": True,
+            "reports": reports,
+        }
+    )
     
 # ---------------- CASE DETAIL ----------------
 
