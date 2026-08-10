@@ -794,63 +794,115 @@ def get_my_reports(request):
         )
 
     username = request.GET.get("username", "").strip()
+    id_number = request.GET.get("id_number", "").strip()
 
-    if not username:
+    # ============================================================
+    # FIND REPORTS
+    # ============================================================
+
+    if username:
+        # -----------------------------------------
+        # ANONYMOUS REPORTS
+        # -----------------------------------------
+        try:
+            account = AnonymousAccount.objects.get(
+                username=username
+            )
+        except AnonymousAccount.DoesNotExist:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Anonymous account not found"
+                },
+                status=404
+            )
+
+        cases = Case.objects.filter(
+            account=account
+        ).order_by("-created_at")
+
+    elif id_number:
+        # -----------------------------------------
+        # NON-ANONYMOUS REPORTS
+        # -----------------------------------------
+        cases = Case.objects.filter(
+            is_anonymous=False,
+            id_number=id_number
+        ).order_by("-created_at")
+
+    else:
         return JsonResponse(
             {
                 "success": False,
-                "error": "Username is required"
+                "error": "Username or ID number is required"
             },
             status=400
         )
 
-    try:
-        account = AnonymousAccount.objects.get(
-            username=username
-        )
-    except AnonymousAccount.DoesNotExist:
-        return JsonResponse(
-            {
-                "success": False,
-                "error": "Anonymous account not found"
-            },
-            status=404
-        )
-
-    cases = Case.objects.filter(
-        account=account
-    ).order_by("-created_at")
+    # ============================================================
+    # BUILD RESPONSE
+    # ============================================================
 
     reports = []
 
     for case in cases:
         reports.append({
             "id": case.id,
+
             "case_code": case.case_code,
+
             "is_anonymous": case.is_anonymous,
+
             "id_number": case.id_number,
+
             "name": case.name,
+
             "surname": case.surname,
+
             "contact": case.contact,
+
             "email": case.email,
+
             "place": case.location,
-            "date": case.incident_date.isoformat(),
-            "time": case.incident_time.isoformat(),
+
+            "date": (
+                case.incident_date.isoformat()
+                if case.incident_date
+                else None
+            ),
+
+            "time": (
+                case.incident_time.isoformat()
+                if case.incident_time
+                else None
+            ),
+
             "department": "",
+
             "description": case.description,
+
             "attachments": (
                 [case.evidence.url]
                 if case.evidence
                 else []
             ),
+
             "status": case.status,
+
             "created_at": case.created_at.isoformat(),
+
             "nationality": case.nationality,
+
             "gender": case.gender,
+
             "age": case.age_group,
+
             "region": case.region,
+
             "sector": case.sector,
+
             "institution": case.institution,
+
             "amount_paid": (
                 str(case.amount)
                 if case.amount is not None
