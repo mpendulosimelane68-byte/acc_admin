@@ -157,11 +157,7 @@ path(
     name="reset_anonymous_password"
 ),
 
-path(
-    "encrypt-existing-id-numbers/",
-    views.encrypt_existing_id_numbers,
-    name="encrypt_existing_id_numbers",
-),
+
 
     path('cases/<int:id>/status/<str:status>/', views.update_case_status, name='update_case_status'),
     path(
