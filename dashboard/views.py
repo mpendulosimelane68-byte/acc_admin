@@ -4976,3 +4976,57 @@ def reset_anonymous_password(request):
             },
             status=500
         )
+
+import os
+
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
+from .models import Case
+from cryptography.fernet import Fernet
+
+
+@login_required
+def encrypt_existing_id_numbers(request):
+    if not request.user.is_superuser:
+        return HttpResponse("Unauthorized", status=403)
+
+    key = os.environ.get("FIELD_ENCRYPTION_KEY")
+
+    if not key:
+        return HttpResponse(
+            "Encryption key is not configured.",
+            status=500
+        )
+
+    fernet = Fernet(key.encode())
+
+    cases = Case.objects.exclude(
+        id_number__isnull=True
+    ).exclude(
+        id_number=""
+    )
+
+    encrypted_count = 0
+    skipped_count = 0
+
+    for case in cases:
+        if case.encrypted_id_number:
+            skipped_count += 1
+            continue
+
+        case.encrypted_id_number = fernet.encrypt(
+            case.id_number.encode()
+        ).decode()
+
+        case.save(
+            update_fields=["encrypted_id_number"]
+        )
+
+        encrypted_count += 1
+
+    return HttpResponse(
+        f"Encryption completed. "
+        f"Encrypted: {encrypted_count}. "
+        f"Skipped: {skipped_count}."
+    )
