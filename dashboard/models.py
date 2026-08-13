@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from .encrypted_fields import EncryptedCharField
 
 class Case(models.Model):
 
@@ -123,10 +123,15 @@ class Case(models.Model):
 
 
     id_number = models.CharField(
-        max_length=30,
-        blank=True,
-        null=True
-    )
+    max_length=30,
+    blank=True,
+    null=True
+)
+
+    encrypted_id_number = models.TextField(
+    blank=True,
+    null=True
+)
     nationality = models.CharField(
     max_length=100,
     blank=True,

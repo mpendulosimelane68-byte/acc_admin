@@ -9,3 +9,5 @@ media/
 staticfiles/
 
 .vscode/
+
+acc_admin_render_backup.dump
