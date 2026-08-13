@@ -121,12 +121,13 @@ class Case(models.Model):
         null=True
     )
 
-    id_number = EncryptedCharField(
+    id_number = models.CharField(
+    max_length=30,
     blank=True,
     null=True
 )
 
-    encrypted_id_number = models.TextField(
+    encrypted_id_number = EncryptedCharField(
     blank=True,
     null=True
 )

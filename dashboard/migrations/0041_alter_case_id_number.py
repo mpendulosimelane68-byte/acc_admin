@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name="case",
-            name="id_number",
+            name="encrypted_id_number",
             field=dashboard.encrypted_fields.EncryptedCharField(
                 blank=True,
                 null=True,
