@@ -74,6 +74,20 @@
 
 
     </h2>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>✓ Success!</strong> {{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
 <a href="{% url 'export_cases_excel' %}" 
    class="btn btn-success mb-3">
 
@@ -569,6 +583,15 @@ Closed
 
 
 </div>
+
+<footer class="mt-5 py-4 text-center"
+        style="background-color: #0A1F44; color: white;">
+    <div class="container">
+        <small>
+            © 2026 Anti-Corruption Commission | Eswatini
+        </small>
+    </div>
+</footer>
 
 
 </body>

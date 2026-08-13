@@ -1031,6 +1031,11 @@ def update_status(request, id):
 
         case.save()
 
+        messages.success(
+        request,
+        f"Case {case.case_code} status updated successfully to {case.get_status_display()}."
+)
+
 
         AuditLog.objects.create(
             case=case,
