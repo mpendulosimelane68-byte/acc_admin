@@ -21,10 +21,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mogz27*gzx#cy=arso0cw&z57!g33%9@)f05&ibs+$mo(ok7!8'
+SECRET_KEY = '7vck_4zj(qs3-vjwo@7t%5*j5&67*$k^)w-s4e=31bs%089du@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://acc-dashboard-ycju.onrender.com",
+]
 
 ALLOWED_HOSTS = [
     "acc-dashboard-ycju.onrender.com",

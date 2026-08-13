@@ -329,7 +329,7 @@ Secure Management System
 
 
 
-<form method="POST">
+<form method="POST" autocomplete="off">
 
 {% csrf_token %}
 
@@ -342,8 +342,8 @@ Username
 type="text"
 name="username"
 placeholder="Enter username"
+autocomplete="off"
 required>
-
 
 
 <label>
@@ -354,12 +354,12 @@ Password
 <div class="password-wrapper">
 
     <input
-    type="password"
-    id="login-password"
-    name="password"
-    placeholder="Enter password"
-    autocomplete="current-password"
-    required>
+type="password"
+id="login-password"
+name="password"
+placeholder="Enter password"
+autocomplete="new-password"
+required>
 
     <span class="show-password" onclick="toggleLoginPassword()">
     👁
