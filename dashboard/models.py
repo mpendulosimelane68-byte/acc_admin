@@ -122,7 +122,6 @@ class Case(models.Model):
     )
 
     id_number = EncryptedCharField(
-    max_length=30,
     blank=True,
     null=True
 )
